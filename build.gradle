@@ -1,0 +1,45 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'com.uni'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // SLF4J API + Logback implementation (logback-classic pulls in
+    // logback-core and slf4j-api transitively).
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
+}
+
+// Build/run against JDK 25. Gradle auto-detects the installed
+// jdk25-openjdk under /usr/lib/jvm — no manual path needed.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+// JavaFX 25 modules. The plugin downloads the libs + native bits
+// for this platform and wires up the module path automatically.
+javafx {
+    version = '25'
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+application {
+    mainModule = 'uni.app'
+    mainClass = 'com.uni.app.Main'
+    // Silences the JDK 25 "restricted native method" warning from JavaFX.
+    applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics']
+}
+
+// `./gradlew javadoc` -> build/docs/javadoc/index.html
+javadoc {
+    options.addBooleanOption('html5', true)
+    options.encoding = 'UTF-8'
+}
