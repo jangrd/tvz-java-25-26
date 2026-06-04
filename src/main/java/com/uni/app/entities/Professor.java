@@ -37,11 +37,14 @@ public final class Professor extends Person {
      */
     public Professor(String oib, String firstName, String lastName, String email, LocalDate dob, String title, int officeNumber, String department) {
         super(oib, firstName, lastName, email, dob);
-        if (title == null || department == null) {
-            throw new ValidationException("Title and department must be provided");
+        if (title == null) {
+            throw new ValidationException("Professor 'title' must not be null");
+        }
+        if (department == null) {
+            throw new ValidationException("Professor 'department' must not be null");
         }
         if (officeNumber <= 0) {
-            throw new ValidationException("Invalid office number");
+            throw new ValidationException("Professor 'officeNumber' must be a positive integer");
         }
 
         this.title = title;
@@ -76,7 +79,7 @@ public final class Professor extends Person {
      */
     public void setTitle(String title) {
         if (title == null) {
-            throw new ValidationException("Title must be provided");
+            throw new ValidationException("Professor 'title' must not be null");
         }
         this.title = title;
     }
@@ -98,7 +101,7 @@ public final class Professor extends Person {
      */
     public void setOfficeNumber(int officeNumber) {
         if (officeNumber <= 0) {
-            throw new ValidationException("Invalid office number");
+            throw new ValidationException("Professor 'officeNumber' must be a positive integer");
         }
         this.officeNumber = officeNumber;
     }
@@ -120,7 +123,7 @@ public final class Professor extends Person {
      */
     public void setDepartment(String department) {
         if (department == null) {
-            throw new ValidationException("Department must be provided");
+            throw new ValidationException("Professor 'department' must not be null");
         }
         this.department = department;
     }

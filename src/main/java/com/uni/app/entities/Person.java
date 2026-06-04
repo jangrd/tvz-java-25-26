@@ -40,8 +40,20 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
      *                             exactly 11 digits, or it fails check-digit validation
      */
     protected Person(String oib, String firstName, String lastName, String email, LocalDate dob) {
-        if (oib == null || firstName == null || lastName == null || email == null) {
-            throw new ValidationException("All attributes must be provided");
+        if (oib == null) {
+            throw new ValidationException("Person 'oib' must not be null");
+        }
+        if (firstName == null) {
+            throw new ValidationException("Person 'firstName' must not be null");
+        }
+        if (lastName == null) {
+            throw new ValidationException("Person 'lastName' must not be null");
+        }
+        if (email == null) {
+            throw new ValidationException("Person 'email' must not be null");
+        }
+        if (dob == null) {
+            throw new ValidationException("Person 'dob' must not be null");
         }
         if (!isValidOib(oib)) {
             throw new ValidationException("OIB checksum validation failed");
@@ -124,8 +136,12 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
      * Sets the person's first name.
      *
      * @param firstName the new first name
+     * @throws ValidationException if {@code firstName} is {@code null}
      */
     public void setFirstName(String firstName) {
+        if (firstName == null) {
+            throw new ValidationException("Person 'firstName' must not be null");
+        }
         this.firstName = firstName;
     }
 
@@ -142,8 +158,12 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
      * Sets the person's last name.
      *
      * @param lastName the new last name
+     * @throws ValidationException if {@code lastName} is {@code null}
      */
     public void setLastName(String lastName) {
+        if (lastName == null) {
+            throw new ValidationException("Person 'lastName' must not be null");
+        }
         this.lastName = lastName;
     }
 
@@ -160,8 +180,12 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
      * Sets the person's email address.
      *
      * @param email the new email address
+     * @throws ValidationException if {@code email} is {@code null}
      */
     public void setEmail(String email) {
+        if (email == null) {
+            throw new ValidationException("Person 'email' must not be null");
+        }
         this.email = email;
     }
 
@@ -202,12 +226,12 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
         if (!oib.chars().allMatch(Character::isDigit)) {
             return false;
         }
-        int kontrola = 10;
+        int control = 10;
         for (char c : oib.substring(0, 10).toCharArray()) {
-            kontrola = (kontrola + c - '0') % 10;
-            if (kontrola == 0) kontrola = 10;
-            kontrola = (kontrola * 2) % 11;
+            control = (control + c - '0') % 10;
+            if (control == 0) control = 10;
+            control = (control * 2) % 11;
         }
-        return (11 - kontrola) % 10 == oib.charAt(10) - '0';
+        return (11 - control) % 10 == oib.charAt(10) - '0';
     }
 }

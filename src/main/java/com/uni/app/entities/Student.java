@@ -40,10 +40,10 @@ public final class Student extends Person {
             throw new ValidationException("JMBAG checksum validation failed");
         }
         if (builder.yearOfStudy <= 0 || builder.yearOfStudy > MAX_YEAR_OF_STUDY) {
-            throw new ValidationException("Year of study must be between 1 and " + MAX_YEAR_OF_STUDY);
+            throw new ValidationException("Student 'yearOfStudy' out of range. [1, " + MAX_YEAR_OF_STUDY + "]");
         }
         if (builder.studyProgramme == null) {
-            throw new ValidationException("Study programme must be provided");
+            throw new ValidationException("Student 'studyProgramme' must not be null");
         }
 
         this.jmbag = builder.jmbag;
@@ -87,7 +87,7 @@ public final class Student extends Person {
      */
     public void setYearOfStudy(int yearOfStudy) {
         if (yearOfStudy <= 0 || yearOfStudy > MAX_YEAR_OF_STUDY) {
-            throw new ValidationException("Year of study must be between 1 and " + MAX_YEAR_OF_STUDY);
+            throw new ValidationException("Student 'yearOfStudy' out of range. [1, " + MAX_YEAR_OF_STUDY + "]");
         }
         this.yearOfStudy = yearOfStudy;
     }
@@ -109,7 +109,7 @@ public final class Student extends Person {
      */
     public void setStudyProgramme(StudyProgramme studyProgramme) {
         if (studyProgramme == null) {
-            throw new ValidationException("Study programme must be provided");
+            throw new ValidationException("Student 'studyProgramme' must not be null");
         }
         this.studyProgramme = studyProgramme;
     }

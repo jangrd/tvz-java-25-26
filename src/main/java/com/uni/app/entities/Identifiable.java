@@ -8,7 +8,7 @@ package com.uni.app.entities;
  * @version 1.0
  * @since 1.0
  */
-public sealed interface Identifiable permits Person {
+public sealed interface Identifiable permits Person, Course, Session, Attendance {
     /**
      * Returns the unique identity of this object.
      *
