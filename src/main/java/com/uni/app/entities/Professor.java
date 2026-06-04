@@ -1,15 +1,17 @@
 package com.uni.app.entities;
 
+import com.uni.app.enums.RoomType;
 import com.uni.app.exceptions.ValidationException;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Represents a professor, identified by their OIB.
  *
- * <p>Extends {@link Person} with the academic title, office number and
- * department. Equality, hashing and the textual representation are inherited
- * from {@link Person} and are based on the OIB.</p>
+ * <p>Extends {@link Person} with the academic title, office and department.
+ * Equality, hashing and the textual representation are inherited from
+ * {@link Person} and are based on the OIB.</p>
  *
  * @author Jan Grdanjski
  * @version 1.0
@@ -18,24 +20,25 @@ import java.time.LocalDate;
  */
 public final class Professor extends Person {
     private String title;
-    private int officeNumber;
+    private Room office;
     private String department;
 
     /**
      * Creates a professor after validating the supplied data.
      *
-     * @param oib          the professor's OIB
-     * @param firstName    the professor's first name
-     * @param lastName     the professor's last name
-     * @param email        the professor's email address
-     * @param dob          the date of birth
-     * @param title        the academic title
-     * @param officeNumber the office number (must be positive)
-     * @param department   the department the professor belongs to
-     * @throws ValidationException if the title or department is {@code null}, or
-     *                             the office number is not positive
+     * @param oib        the professor's OIB
+     * @param firstName  the professor's first name
+     * @param lastName   the professor's last name
+     * @param email      the professor's email address
+     * @param dob        the date of birth
+     * @param title      the academic title
+     * @param office     the professor's office (must be of type {@link RoomType#OFFICE})
+     * @param department the department the professor belongs to
+     * @throws ValidationException if the title, department or office is
+     *                             {@code null}, or the office is not of type
+     *                             {@link RoomType#OFFICE}
      */
-    public Professor(String oib, String firstName, String lastName, String email, LocalDate dob, String title, int officeNumber, String department) {
+    public Professor(String oib, String firstName, String lastName, String email, LocalDate dob, String title, Room office, String department) {
         super(oib, firstName, lastName, email, dob);
         if (title == null) {
             throw new ValidationException("Professor 'title' must not be null");
@@ -43,12 +46,15 @@ public final class Professor extends Person {
         if (department == null) {
             throw new ValidationException("Professor 'department' must not be null");
         }
-        if (officeNumber <= 0) {
-            throw new ValidationException("Professor 'officeNumber' must be a positive integer");
+        if (office == null) {
+            throw new ValidationException("Professor 'office' must not be null");
+        }
+        if (office.getType() != RoomType.OFFICE) {
+            throw new ValidationException("Professor 'office' must have RoomType.OFFICE");
         }
 
         this.title = title;
-        this.officeNumber = officeNumber;
+        this.office = office;
         this.department = department;
     }
 
@@ -60,6 +66,31 @@ public final class Professor extends Person {
     @Override
     public String getId() {
         return getOib();
+    }
+
+    /**
+     * Compares this professor with another object for equality by their OIB.
+     *
+     * @param o the object to compare with
+     * @return {@code true} if {@code o} is a professor with the same OIB,
+     *         {@code false} otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return Objects.equals(getId(), ((Professor) o).getId());
+    }
+
+    /**
+     * Computes a hash code consistent with {@link #equals(Object)}.
+     *
+     * @return the hash code derived from the OIB
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 
     /**
@@ -85,25 +116,29 @@ public final class Professor extends Person {
     }
 
     /**
-     * Returns the professor's office number.
+     * Returns the professor's office.
      *
-     * @return the office number
+     * @return the office
      */
-    public int getOfficeNumber() {
-        return officeNumber;
+    public Room getOffice() {
+        return office;
     }
 
     /**
-     * Sets the professor's office number.
+     * Sets the professor's office.
      *
-     * @param officeNumber the new office number (must be positive)
-     * @throws ValidationException if the office number is not positive
+     * @param office the new office (must be of type {@link RoomType#OFFICE})
+     * @throws ValidationException if {@code office} is {@code null} or is not of
+     *                             type {@link RoomType#OFFICE}
      */
-    public void setOfficeNumber(int officeNumber) {
-        if (officeNumber <= 0) {
-            throw new ValidationException("Professor 'officeNumber' must be a positive integer");
+    public void setOffice(Room office) {
+        if (office == null) {
+            throw new ValidationException("Professor 'office' must not be null");
         }
-        this.officeNumber = officeNumber;
+        if (office.getType() != RoomType.OFFICE) {
+            throw new ValidationException("Professor 'office' must have RoomType.OFFICE");
+        }
+        this.office = office;
     }
 
     /**

@@ -74,7 +74,9 @@ public final class Course implements Identifiable {
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Course course = (Course) o;
         return Objects.equals(code, course.code);
     }

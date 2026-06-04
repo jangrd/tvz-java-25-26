@@ -17,6 +17,10 @@ import org.slf4j.LoggerFactory;
  * <p>A minimal JavaFX window that confirms the JDK&nbsp;25 + JavaFX&nbsp;25
  * toolchain is wired up correctly. Replace the contents of
  * {@link #start(Stage)} with your own UI.</p>
+ *
+ * @author Jan Grdanjski
+ * @version 1.0
+ * @since 1.0
  */
 public class Main extends Application {
 

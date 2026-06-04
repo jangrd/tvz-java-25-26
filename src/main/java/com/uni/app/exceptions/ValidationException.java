@@ -9,6 +9,8 @@ package com.uni.app.exceptions;
  * @since 1.0
  */
 public class ValidationException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates the exception with a message describing the validation failure.
      *

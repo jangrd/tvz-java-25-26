@@ -17,7 +17,7 @@ import java.util.Objects;
  * @version 1.0
  * @since 1.0
  */
-public class Relation<A extends Identifiable, B extends Identifiable> {
+public final class Relation<A extends Identifiable, B extends Identifiable> {
     private final A left;
     private final B right;
 
@@ -49,7 +49,9 @@ public class Relation<A extends Identifiable, B extends Identifiable> {
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Relation<?, ?> relation = (Relation<?, ?>) o;
         return Objects.equals(getLeft(), relation.getLeft()) && Objects.equals(getRight(), relation.getRight());
     }

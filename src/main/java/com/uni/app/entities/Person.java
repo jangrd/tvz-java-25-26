@@ -56,7 +56,7 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
             throw new ValidationException("Person 'dob' must not be null");
         }
         if (!isValidOib(oib)) {
-            throw new ValidationException("OIB checksum validation failed");
+            throw new ValidationException("Person 'oib' not valid");
         }
 
         this.oib = oib;
@@ -78,9 +78,15 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (this == o) return true;
-        if (getClass() != o.getClass()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
         Person other = (Person) o;
         return Objects.equals(this.getId(), other.getId());
     }
@@ -201,14 +207,13 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
     /**
      * Validates provided OIB.
      *
-     * <p>Validation criteria:</p>
+     * <p>Returns {@code true} only when all of the following hold:</p>
      * <ul>
-     *     <li>OIB can't be null</li>
-     *     <li>OIB length must be 11 characters</li>
-     *     <li>
-     *         Iterates over the first ten digits to compute the expected eleventh
-     *         (control) digit and compares it with the supplied one.
-     *     </li>
+     *     <li>the value is not {@code null};</li>
+     *     <li>it is exactly 11 characters long;</li>
+     *     <li>every character is a digit;</li>
+     *     <li>the eleventh digit matches the control digit computed from the
+     *         first ten using the ISO 7064 (MOD 11,10) algorithm.</li>
      * </ul>
      *
      * @param oib the OIB to validate
@@ -229,7 +234,9 @@ public sealed abstract class Person implements Identifiable permits Student, Pro
         int control = 10;
         for (char c : oib.substring(0, 10).toCharArray()) {
             control = (control + c - '0') % 10;
-            if (control == 0) control = 10;
+            if (control == 0) {
+                control = 10;
+            }
             control = (control * 2) % 11;
         }
         return (11 - control) % 10 == oib.charAt(10) - '0';

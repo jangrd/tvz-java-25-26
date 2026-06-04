@@ -74,7 +74,9 @@ public final class Attendance implements Identifiable {
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Attendance that = (Attendance) o;
         return Objects.equals(getId(), that.getId());
     }

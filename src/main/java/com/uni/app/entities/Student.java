@@ -4,6 +4,7 @@ import com.uni.app.enums.StudyProgramme;
 import com.uni.app.exceptions.ValidationException;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Represents a student enrolled in a study programme, identified by their JMBAG.
@@ -37,7 +38,7 @@ public final class Student extends Person {
     private Student(Builder builder) {
         super(builder.oib, builder.firstName, builder.lastName, builder.email, builder.dob);
         if (!isValidJmbag(builder.jmbag)) {
-            throw new ValidationException("JMBAG checksum validation failed");
+            throw new ValidationException("Student 'jmbag' not valid");
         }
         if (builder.yearOfStudy <= 0 || builder.yearOfStudy > MAX_YEAR_OF_STUDY) {
             throw new ValidationException("Student 'yearOfStudy' out of range. [1, " + MAX_YEAR_OF_STUDY + "]");
@@ -59,6 +60,31 @@ public final class Student extends Person {
     @Override
     public String getId() {
         return jmbag;
+    }
+
+    /**
+     * Compares this student with another object for equality by their JMBAG.
+     *
+     * @param o the object to compare with
+     * @return {@code true} if {@code o} is a student with the same JMBAG,
+     *         {@code false} otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return Objects.equals(getId(), ((Student) o).getId());
+    }
+
+    /**
+     * Computes a hash code consistent with {@link #equals(Object)}.
+     *
+     * @return the hash code derived from the JMBAG
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 
     /**
@@ -145,7 +171,9 @@ public final class Student extends Person {
             int d = c - '0';
             if (doubleIt) {
                 d *= 2;
-                if (d > 9) d -= 9;
+                if (d > 9) {
+                    d -= 9;
+                }
             }
             sum += d;
             doubleIt = !doubleIt;

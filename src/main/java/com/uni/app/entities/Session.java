@@ -1,5 +1,6 @@
 package com.uni.app.entities;
 
+import com.uni.app.enums.RoomType;
 import com.uni.app.enums.SessionType;
 import com.uni.app.exceptions.ValidationException;
 
@@ -11,7 +12,7 @@ import java.util.Objects;
  * identified by its id.
  *
  * <p>A session ties a {@link Course} to the {@link Professor} who holds it, at a
- * given date and time, in a given room and of a given {@link SessionType}.
+ * given date and time, in a given {@link Room} and of a given {@link SessionType}.
  * Attendance is recorded per session.</p>
  *
  * @author Jan Grdanjski
@@ -25,22 +26,23 @@ public final class Session implements Identifiable, Schedulable {
     private Course course;
     private Professor professor;
     private LocalDateTime dateTime;
-    private int roomNumber;
+    private Room room;
 
     /**
      * Creates a session.
      *
-     * @param id         the unique session id
-     * @param type       the session type
-     * @param course     the course being taught
-     * @param professor  the professor holding the session
-     * @param dateTime   the date and time of the session
-     * @param roomNumber the room number (must be positive)
-     * @throws ValidationException if the id, type, course, professor or
-     *                             dateTime is {@code null}, or the room number
-     *                             is not positive
+     * @param id        the unique session id
+     * @param type      the session type
+     * @param course    the course being taught
+     * @param professor the professor holding the session
+     * @param dateTime  the date and time of the session
+     * @param room      the room where the session is held (must not be of type
+     *                  {@link RoomType#OFFICE})
+     * @throws ValidationException if the id, type, course, professor, dateTime
+     *                             or room is {@code null}, or the room is of type
+     *                             {@link RoomType#OFFICE}
      */
-    public Session(String id, SessionType type, Course course, Professor professor, LocalDateTime dateTime, int roomNumber) {
+    public Session(String id, SessionType type, Course course, Professor professor, LocalDateTime dateTime, Room room) {
         if (id == null) {
             throw new ValidationException("Session 'id' must not be null");
         }
@@ -56,8 +58,11 @@ public final class Session implements Identifiable, Schedulable {
         if (dateTime == null) {
             throw new ValidationException("Session 'dateTime' must not be null");
         }
-        if (roomNumber <= 0) {
-            throw new ValidationException("Session 'roomNumber' must be a positive integer");
+        if (room == null) {
+            throw new ValidationException("Session 'room' must not be null");
+        }
+        if (room.getType() == RoomType.OFFICE) {
+            throw new ValidationException("Session 'room' must not have RoomType.OFFICE");
         }
 
         this.id = id;
@@ -65,7 +70,7 @@ public final class Session implements Identifiable, Schedulable {
         this.course = course;
         this.professor = professor;
         this.dateTime = dateTime;
-        this.roomNumber = roomNumber;
+        this.room = room;
     }
 
     /**
@@ -87,7 +92,9 @@ public final class Session implements Identifiable, Schedulable {
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Session session = (Session) o;
         return Objects.equals(getId(), session.getId());
     }
@@ -192,24 +199,28 @@ public final class Session implements Identifiable, Schedulable {
     }
 
     /**
-     * Returns the room number of this session.
+     * Returns the room where this session is held.
      *
-     * @return the room number
+     * @return the room
      */
-    public int getRoomNumber() {
-        return roomNumber;
+    public Room getRoom() {
+        return room;
     }
 
     /**
-     * Sets the room number of this session.
+     * Sets the room where this session is held.
      *
-     * @param roomNumber the new room number (must be positive)
-     * @throws ValidationException if the room number is not positive
+     * @param room the new room (must not be of type {@link RoomType#OFFICE})
+     * @throws ValidationException if {@code room} is {@code null} or is of type
+     *                             {@link RoomType#OFFICE}
      */
-    public void setRoomNumber(int roomNumber) {
-        if (roomNumber <= 0) {
-            throw new ValidationException("Session 'roomNumber' must be a positive integer");
+    public void setRoom(Room room) {
+        if (room == null) {
+            throw new ValidationException("Session 'room' must not be null");
         }
-        this.roomNumber = roomNumber;
+        if (room.getType() == RoomType.OFFICE) {
+            throw new ValidationException("Session 'room' must not have RoomType.OFFICE");
+        }
+        this.room = room;
     }
 }
