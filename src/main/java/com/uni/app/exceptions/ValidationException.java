@@ -1,5 +1,7 @@
 package com.uni.app.exceptions;
 
+import java.io.Serial;
+
 /**
  * Thrown when supplied data fails validation, such as an invalid OIB or JMBAG
  * or an out-of-range value.
@@ -9,6 +11,7 @@ package com.uni.app.exceptions;
  * @since 1.0
  */
 public class ValidationException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

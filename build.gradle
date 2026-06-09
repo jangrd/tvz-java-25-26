@@ -14,6 +14,9 @@ dependencies {
     // SLF4J API + Logback implementation (logback-classic pulls in
     // logback-core and slf4j-api transitively).
     implementation 'ch.qos.logback:logback-classic:1.5.18'
+
+    // H2 embedded database (JDBC driver).
+    implementation 'com.h2database:h2:2.3.232'
 }
 
 // Build/run against JDK 25. Gradle auto-detects the installed
