@@ -70,7 +70,6 @@ public final class DatabaseManager {
         try {
             connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
-            log.error("Database connection failed", e);
             throw new DatabaseException("Database connection failed", e);
         }
     }
@@ -94,7 +93,6 @@ public final class DatabaseManager {
             }
             return ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("DatabaseManager query execution failed", e);
             throw new DatabaseException("DatabaseManager query execution failed", e);
         }
     }
@@ -128,7 +126,6 @@ public final class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            log.error("DatabaseManager query failed", e);
             throw new DatabaseException("DatabaseManager query failed", e);
         }
         return results;
@@ -147,7 +144,6 @@ public final class DatabaseManager {
         try {
             connection.close();
         } catch (SQLException e) {
-            log.error("Database close failed", e);
             throw new DatabaseException("Database close failed", e);
         }
     }

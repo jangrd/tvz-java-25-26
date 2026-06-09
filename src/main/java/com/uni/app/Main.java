@@ -1,6 +1,9 @@
 package com.uni.app;
 
+import com.uni.app.database.DatabaseManager;
+import com.uni.app.exceptions.DatabaseException;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,12 +28,26 @@ import org.slf4j.LoggerFactory;
 public class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final String DB_URL = "jdbc:h2:./data/database;INIT=RUNSCRIPT FROM 'classpath:schema.sql'";
+
+    private DatabaseManager db;
 
     /** A simple click counter, shown to prove the event loop runs. */
     private int clicks;
 
     /** Creates the application; instantiated by the JavaFX runtime. */
     public Main() {
+    }
+
+    @Override
+    public void init() {
+        db = new DatabaseManager(DB_URL, "sa", "");
+        try {
+            db.connect();
+        } catch (DatabaseException e) {
+            log.error("Failed to initialize database connection", e);
+            Platform.exit();
+        }
     }
 
     /**
@@ -55,6 +72,15 @@ public class Main extends Application {
         stage.setTitle("uni-app");
         stage.setScene(new Scene(root, 480, 220));
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        try {
+            db.close();
+        } catch (DatabaseException e) {
+            log.error("Failed to close database connection", e);
+        }
     }
 
     /**
