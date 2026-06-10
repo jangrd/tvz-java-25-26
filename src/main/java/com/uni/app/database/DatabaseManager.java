@@ -19,8 +19,8 @@ import java.util.List;
  *
  * <p>The configuration (URL and credentials) is fixed at construction; call
  * {@link #connect()} to open the connection and {@link #close()} to release it.
- * Every {@link SQLException} is logged with Logback and rethrown as a
- * {@link DatabaseException}.</p>
+ * Each {@link SQLException} is rethrown as a {@link DatabaseException} (keeping
+ * the original cause), to be logged and handled by the caller.</p>
  *
  * @author Jan Grdanjski
  * @version 1.0
@@ -129,6 +129,36 @@ public final class DatabaseManager {
             throw new DatabaseException("DatabaseManager query failed", e);
         }
         return results;
+    }
+
+    /**
+     * Returns whether a table with the given column exists in the database.
+     *
+     * @param table  the table name to look for
+     * @param column the column name that must exist in that table
+     * @return {@code true} if such a table and column exist, {@code false}
+     *         otherwise (also when {@code table} or {@code column} is {@code null})
+     * @throws DatabaseException if the lookup query fails
+     */
+    public boolean tableWithColumnExist(String table, String column) throws DatabaseException {
+        if (table == null || column == null) {
+            return false;
+        }
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT COUNT(*)" +
+                " FROM INFORMATION_SCHEMA.COLUMNS" +
+                " WHERE TABLE_SCHEMA = 'PUBLIC'" +
+                " AND UPPER(TABLE_NAME) = UPPER(?)" +
+                " AND UPPER(COLUMN_NAME) = UPPER(?)"
+        )) {
+            ps.setString(1, table);
+            ps.setString(2, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("DatabaseManager query failed", e);
+        }
     }
 
     /**
