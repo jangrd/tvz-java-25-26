@@ -77,7 +77,7 @@ public abstract class AbstractRepository<T extends Identifiable> {
      * @throws ValidationException if {@code id} is {@code null}
      * @throws DatabaseException   if the query fails
      */
-    public final Optional<T> findById(String id) throws DatabaseException {
+    public Optional<T> findById(String id) throws DatabaseException {
         if (id == null) {
             throw new ValidationException("AbstractRepository 'id' must not be null");
         }
@@ -90,15 +90,50 @@ public abstract class AbstractRepository<T extends Identifiable> {
     }
 
     /**
+     * Executes a data-modifying statement (INSERT, UPDATE or DELETE) for subclasses.
+     *
+     * @param query  the SQL statement, optionally with {@code ?} placeholders
+     * @param params the values bound to the placeholders, in order
+     * @return the number of rows affected
+     * @throws DatabaseException if the statement fails
+     */
+    protected final int execute(String query, Object... params) throws DatabaseException {
+        return db.execute(query, params);
+    }
+
+    /**
      * Deletes the entity with the given id, if present.
      *
      * @param id the id of the entity to delete
+     * @return number of affected rows
+     * @throws ValidationException if {@code id} is {@code null}
      * @throws DatabaseException if the statement fails
      */
-    public void deleteById(String id) throws DatabaseException {
-        db.execute(
+    public int deleteById(String id) throws DatabaseException {
+        if (id == null) {
+            throw new ValidationException("AbstractRepository 'id' must not be null");
+        }
+        return execute(
                 "DELETE FROM " + table + " WHERE " + idColumn + " = ?",
                 id
         );
+    }
+
+    /**
+     * Returns the bound table name.
+     *
+     * @return the table name
+     */
+    protected final String getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the bound id column name.
+     *
+     * @return the id column name
+     */
+    protected final String getIdColumn() {
+        return idColumn;
     }
 }

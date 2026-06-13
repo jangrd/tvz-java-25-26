@@ -19,9 +19,9 @@ public interface RowMapper<T> {
     /**
      * Maps the current row of the result set to an object.
      *
-     * @param result the result set positioned at the row to map
+     * @param rs the result set positioned at the row to map
      * @return the object created from the current row
      * @throws SQLException if reading from the result set fails
      */
-    T map(ResultSet result) throws SQLException;
+    T mapRow(ResultSet rs) throws SQLException;
 }

@@ -122,7 +122,7 @@ public final class DatabaseManager {
             }
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    results.add(mapper.map(rs));
+                    results.add(mapper.mapRow(rs));
                 }
             }
         } catch (SQLException e) {
