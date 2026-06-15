@@ -32,13 +32,13 @@ public final class BuildingRepository extends AbstractRepository<Building> {
      * @throws DatabaseException   if checking the schema fails
      */
     public BuildingRepository(DatabaseManager db) throws DatabaseException {
-        super(db, BuildingRepository::mapRow, "building", "id");
+        super(db, BuildingRepository::mapRow, "building", "building_id");
         sqlInsert = """
-                INSERT INTO %s (id, name, address)
+                INSERT INTO %s (building_id, building_name, building_address)
                 VALUES (?, ?, ?);
                 """.formatted(getTable());
         sqlUpdate = """
-                UPDATE %s SET name = ?, address = ?
+                UPDATE %s SET building_name = ?, building_address = ?
                 WHERE %s = ?;
                 """.formatted(getTable(), getIdColumn());
     }
@@ -85,9 +85,9 @@ public final class BuildingRepository extends AbstractRepository<Building> {
 
     private static Building mapRow(ResultSet rs) throws SQLException {
         return new Building(
-                rs.getString("id"),
-                rs.getString("name"),
-                rs.getString("address")
+                rs.getString("building_id"),
+                rs.getString("building_name"),
+                rs.getString("building_address")
         );
     }
 }

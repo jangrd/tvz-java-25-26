@@ -41,34 +41,37 @@ public final class ProfessorRepository extends AbstractRepository<Professor> {
      * @throws DatabaseException   if checking the schema fails
      */
     public ProfessorRepository(DatabaseManager db) throws DatabaseException {
-        super(db, ProfessorRepository::mapRow, "professor", "oib");
+        super(db, ProfessorRepository::mapRow, "professor", "professor_oib");
         sqlInsert = """
                 INSERT INTO %s
-                (oib, first_name, last_name, email, dob, title, office_room_id, department)
+                (professor_oib, professor_first_name, professor_last_name, professor_email,
+                 professor_dob, professor_title, professor_office_room_id, professor_department)
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?);
                 """.formatted(getTable());
         sqlSelectOne = """
-                SELECT p.oib, p.first_name, p.last_name, p.email, p.dob, p.title, p.department,
-                       r.id AS r_id, r.type AS r_type, r.capacity AS r_capacity,
-                       b.id AS b_id, b.name AS b_name, b.address AS b_address
-                FROM %s AS p
-                JOIN room AS r ON p.office_room_id = r.id
-                JOIN building AS b ON r.building_id = b.id
+                SELECT professor_oib, professor_first_name, professor_last_name, professor_email,
+                       professor_dob, professor_title, professor_department,
+                       room_id, room_type, room_capacity,
+                       building_id, building_name, building_address
+                FROM %s
+                JOIN room ON professor_office_room_id = room_id
+                JOIN building ON room_building_id = building_id
                 WHERE %s = ?;
                 """.formatted(getTable(), getIdColumn());
         sqlSelectAll = """
-                SELECT p.oib, p.first_name, p.last_name, p.email, p.dob, p.title, p.department,
-                       r.id AS r_id, r.type AS r_type, r.capacity AS r_capacity,
-                       b.id AS b_id, b.name AS b_name, b.address AS b_address
-                FROM %s AS p
-                JOIN room AS r ON p.office_room_id = r.id
-                JOIN building AS b ON r.building_id = b.id;
+                SELECT professor_oib, professor_first_name, professor_last_name, professor_email,
+                       professor_dob, professor_title, professor_department,
+                       room_id, room_type, room_capacity,
+                       building_id, building_name, building_address
+                FROM %s
+                JOIN room ON professor_office_room_id = room_id
+                JOIN building ON room_building_id = building_id;
                 """.formatted(getTable());
         sqlUpdate = """
                 UPDATE %s SET
-                oib = ?, first_name = ?, last_name = ?, email = ?,
-                dob = ?, title = ?, office_room_id = ?, department = ?
+                professor_first_name = ?, professor_last_name = ?, professor_email = ?,
+                professor_dob = ?, professor_title = ?, professor_office_room_id = ?, professor_department = ?
                 WHERE %s = ?;
                 """.formatted(getTable(), getIdColumn());
     }
@@ -128,8 +131,7 @@ public final class ProfessorRepository extends AbstractRepository<Professor> {
         if (id == null) {
             throw new ValidationException("ProfessorRepository 'id' must not be null");
         }
-        List<Professor> results = query(sqlSelectOne, id);
-        return results.stream().findFirst();
+        return query(sqlSelectOne, id).stream().findFirst();
     }
 
     @Override
@@ -139,25 +141,25 @@ public final class ProfessorRepository extends AbstractRepository<Professor> {
 
     private static Professor mapRow(ResultSet rs) throws SQLException {
         Building building = new Building(
-                rs.getString("b_id"),
-                rs.getString("b_name"),
-                rs.getString("b_address")
+                rs.getString("building_id"),
+                rs.getString("building_name"),
+                rs.getString("building_address")
         );
         Room officeRoom = new Room(
-                rs.getString("r_id"),
-                RoomType.valueOf(rs.getString("r_type")),
-                rs.getInt("r_capacity"),
+                rs.getString("room_id"),
+                RoomType.valueOf(rs.getString("room_type")),
+                rs.getInt("room_capacity"),
                 building
         );
         return new Professor(
-                rs.getString("oib"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("email"),
-                rs.getObject("dob", LocalDate.class),
-                rs.getString("title"),
+                rs.getString("professor_oib"),
+                rs.getString("professor_first_name"),
+                rs.getString("professor_last_name"),
+                rs.getString("professor_email"),
+                rs.getObject("professor_dob", LocalDate.class),
+                rs.getString("professor_title"),
                 officeRoom,
-                rs.getString("department")
+                rs.getString("professor_department")
         );
     }
 }

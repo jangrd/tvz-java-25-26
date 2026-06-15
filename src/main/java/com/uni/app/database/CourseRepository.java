@@ -32,13 +32,13 @@ public final class CourseRepository extends AbstractRepository<Course> {
      * @throws DatabaseException   if checking the schema fails
      */
     public CourseRepository(DatabaseManager db) throws DatabaseException {
-        super(db, CourseRepository::mapRow, "course", "code");
+        super(db, CourseRepository::mapRow, "course", "course_code");
         sqlInsert = """
-                INSERT INTO %s (code, name, ects, semester)
+                INSERT INTO %s (course_code, course_name, course_ects, course_semester)
                 VALUES (?, ?, ?, ?);
                 """.formatted(getTable());
         sqlUpdate = """
-                UPDATE %s SET name = ?, ects = ?, semester = ?
+                UPDATE %s SET course_name = ?, course_ects = ?, course_semester = ?
                 WHERE %s = ?;
                 """.formatted(getTable(), getIdColumn());
     }
@@ -87,10 +87,10 @@ public final class CourseRepository extends AbstractRepository<Course> {
 
     private static Course mapRow(ResultSet rs) throws SQLException {
         return new Course(
-                rs.getString("code"),
-                rs.getString("name"),
-                rs.getInt("ects"),
-                rs.getInt("semester")
+                rs.getString("course_code"),
+                rs.getString("course_name"),
+                rs.getInt("course_ects"),
+                rs.getInt("course_semester")
         );
     }
 }

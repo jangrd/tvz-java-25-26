@@ -39,6 +39,10 @@ public class Main extends Application {
     public Main() {
     }
 
+    /**
+     * Opens the database connection before the UI starts; exits the application
+     * if the connection cannot be established.
+     */
     @Override
     public void init() {
         db = new DatabaseManager(DB_URL, "sa", "");
@@ -74,6 +78,9 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Closes the database connection when the application shuts down.
+     */
     @Override
     public void stop() {
         try {

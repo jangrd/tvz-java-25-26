@@ -39,28 +39,28 @@ public final class RoomRepository extends AbstractRepository<Room> {
      * @throws DatabaseException   if checking the schema fails
      */
     public RoomRepository(DatabaseManager db) throws DatabaseException {
-        super(db, RoomRepository::mapRow, "room", "id");
+        super(db, RoomRepository::mapRow, "room", "room_id");
         sqlInsert = """
-                INSERT INTO %s (id, type, capacity, building_id)
+                INSERT INTO %s (room_id, room_type, room_capacity, room_building_id)
                 VALUES (?, ?, ?, ?);
                 """.formatted(getTable());
         sqlUpdate = """
-                UPDATE %s SET type = ?, capacity = ?, building_id = ?
+                UPDATE %s SET room_type = ?, room_capacity = ?, room_building_id = ?
                 WHERE %s = ?;
                 """.formatted(getTable(), getIdColumn());
         sqlSelectAll = """
-                SELECT r.id, r.type, r.capacity,
-                       b.id AS b_id, b.name AS b_name, b.address AS b_address
-                FROM %s AS r
-                JOIN building AS b ON r.building_id = b.id;
+                SELECT room_id, room_type, room_capacity,
+                       building_id, building_name, building_address
+                FROM %s
+                JOIN building ON room_building_id = building_id;
                 """.formatted(getTable());
         sqlSelectOne = """
-                SELECT r.id, r.type, r.capacity,
-                       b.id AS b_id, b.name AS b_name, b.address AS b_address
-                FROM %s AS r
-                JOIN building AS b ON r.building_id = b.id
-                WHERE r.id = ?;
-                """.formatted(getTable());
+                SELECT room_id, room_type, room_capacity,
+                       building_id, building_name, building_address
+                FROM %s
+                JOIN building ON room_building_id = building_id
+                WHERE %s = ?;
+                """.formatted(getTable(), getIdColumn());
     }
 
     /**
@@ -120,14 +120,14 @@ public final class RoomRepository extends AbstractRepository<Room> {
 
     private static Room mapRow(ResultSet rs) throws SQLException {
         Building building = new Building(
-                rs.getString("b_id"),
-                rs.getString("b_name"),
-                rs.getString("b_address")
+                rs.getString("building_id"),
+                rs.getString("building_name"),
+                rs.getString("building_address")
         );
         return new Room(
-                rs.getString("id"),
-                RoomType.valueOf(rs.getString("type")),
-                rs.getInt("capacity"),
+                rs.getString("room_id"),
+                RoomType.valueOf(rs.getString("room_type")),
+                rs.getInt("room_capacity"),
                 building
         );
     }

@@ -35,17 +35,18 @@ public final class StudentRepository extends AbstractRepository<Student> {
      * @throws DatabaseException   if checking the schema fails
      */
     public StudentRepository(DatabaseManager db) throws DatabaseException {
-        super(db, StudentRepository::mapRow, "student", "jmbag");
+        super(db, StudentRepository::mapRow, "student", "student_jmbag");
         sqlInsert = """
             INSERT INTO %s
-            (jmbag, oib, first_name, last_name, email, dob, year_of_study, study_programme)
+            (student_jmbag, student_oib, student_first_name, student_last_name,
+             student_email, student_dob, student_year_of_study, student_study_programme)
             VALUES
             (?, ?, ?, ?, ?, ?, ?, ?);
             """.formatted(getTable());
         sqlUpdate = """
             UPDATE %s SET
-            oib = ?, first_name = ?, last_name = ?, email = ?,
-            dob = ?, year_of_study = ?, study_programme = ?
+            student_oib = ?, student_first_name = ?, student_last_name = ?, student_email = ?,
+            student_dob = ?, student_year_of_study = ?, student_study_programme = ?
             WHERE %s = ?;
             """.formatted(getTable(), getIdColumn());
     }
@@ -102,14 +103,14 @@ public final class StudentRepository extends AbstractRepository<Student> {
 
     private static Student mapRow(ResultSet rs) throws SQLException {
         return new Student.Builder()
-                .jmbag(rs.getString("jmbag"))
-                .oib(rs.getString("oib"))
-                .firstName(rs.getString("first_name"))
-                .lastName(rs.getString("last_name"))
-                .email(rs.getString("email"))
-                .dob(rs.getObject("dob", LocalDate.class))
-                .yearOfStudy(rs.getInt("year_of_study"))
-                .studyProgramme(StudyProgramme.valueOf(rs.getString("study_programme")))
+                .jmbag(rs.getString("student_jmbag"))
+                .oib(rs.getString("student_oib"))
+                .firstName(rs.getString("student_first_name"))
+                .lastName(rs.getString("student_last_name"))
+                .email(rs.getString("student_email"))
+                .dob(rs.getObject("student_dob", LocalDate.class))
+                .yearOfStudy(rs.getInt("student_year_of_study"))
+                .studyProgramme(StudyProgramme.valueOf(rs.getString("student_study_programme")))
                 .build();
     }
 }
