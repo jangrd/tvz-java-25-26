@@ -14,7 +14,11 @@ module uni.app {
     requires java.sql;
     requires com.h2database;
 
-    // Allow JavaFX's FXML loader to reflectively access this package.
+    // Allow JavaFX's FXML loader to reflectively access these packages.
     opens com.uni.app to javafx.fxml;
+    opens com.uni.app.controller to javafx.fxml;
+    opens com.uni.app.controller.admin to javafx.fxml;
+    opens com.uni.app.controller.professor to javafx.fxml;
+    opens com.uni.app.controller.student to javafx.fxml;
     exports com.uni.app;
 }

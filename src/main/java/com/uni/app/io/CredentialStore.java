@@ -65,7 +65,7 @@ public final class CredentialStore {
                 try {
                     users.add(new User(userData[0], userData[1], UserRole.valueOf(userData[2])));
                 } catch (IllegalArgumentException e) {
-                    log.warn("Skipping credential entry with unknown role '{}'", userData[2]);
+                    log.warn("CredentialStore skipping credential entry with unknown role '{}'", userData[2]);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -82,6 +82,12 @@ public final class CredentialStore {
      *         or {@link Optional#empty()} if authentication fails
      */
     public Optional<User> authenticate(String username, String password) {
+        if (username == null) {
+            throw new ValidationException("CredentialStore 'username' must not be null");
+        }
+        if (password == null) {
+            throw new ValidationException("CredentialStore 'password' must not be null");
+        }
         for (User user : users) {
             if (Objects.equals(user.username(), username)) {
                 if (hash(password).equals(user.passwordHash())) {
@@ -96,7 +102,7 @@ public final class CredentialStore {
      * Returns an unmodifiable view of all loaded users.
      *
      * @return list of all users currently in memory
-     */
+   z  */
     public List<User> getAll() {
         return List.copyOf(users);
     }

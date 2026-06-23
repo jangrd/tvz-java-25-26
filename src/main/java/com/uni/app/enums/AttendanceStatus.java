@@ -11,12 +11,16 @@ package com.uni.app.enums;
  * @since 1.0
  */
 public enum AttendanceStatus {
-    /** The student was absent. */
+    /** The student is expected to attend. */
+    PENDING("Potreban dolazak"),
+    /** The student was absent or rejected entry. */
     ABSENT("Odsutan"),
     /** The student was present. */
     PRESENT("Prisutan"),
+    /** The student came late and was accepted in. */
+    LATE("Prisutan uz kasnjenje"),
     /** The student's absence was excused. */
-    EXCUSED("Isprican");
+    EXCUSED("Opravdano odsutan");
 
     private final String displayName;
 

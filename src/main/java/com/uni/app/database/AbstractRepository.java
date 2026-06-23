@@ -114,6 +114,21 @@ public abstract class AbstractRepository<T extends Identifiable> {
     }
 
     /**
+     * Runs a read query and maps each row with the given mapper, for subclasses
+     * that need to return a type other than {@code T}.
+     *
+     * @param <R>    the result type
+     * @param query  the SQL query, optionally with {@code ?} placeholders
+     * @param mapper the row mapper to apply to each result row
+     * @param params the values bound to the placeholders, in order
+     * @return a list of mapped results, empty if the query returns no rows
+     * @throws DatabaseException if the query fails
+     */
+    protected final <R> List<R> queryWith(String query, RowMapper<R> mapper, Object... params) throws DatabaseException {
+        return db.get(query, mapper, params);
+    }
+
+    /**
      * Deletes the entity with the given id, if present.
      *
      * @param id the id of the entity to delete

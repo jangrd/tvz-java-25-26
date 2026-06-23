@@ -70,3 +70,15 @@ CREATE TABLE IF NOT EXISTS attendance (
     attendance_status        VARCHAR(20) NOT NULL,
     attendance_recorded_at   TIMESTAMP   NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS student_group (
+    student_group_id    VARCHAR(50) PRIMARY KEY,
+    student_group_name  VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS student_group_membership (
+    student_group_membership_student_jmbag      CHAR(10)    NOT NULL REFERENCES student(student_jmbag),
+    student_group_membership_student_group_id   VARCHAR(50) NOT NULL REFERENCES student_group(student_group_id),
+    PRIMARY KEY (student_group_membership_student_jmbag, student_group_membership_student_group_id)
+);
+

@@ -19,7 +19,7 @@ import java.util.List;
  * Persists {@link ChangeLog} entries to a binary file using Java serialization.
  *
  * <p>The file stores a single serialized {@code ArrayList<ChangeLog>}. Each call
- * to {@link #save(List)} overwrites the file completely. Call {@link #readAll()}
+ * to {@link #save(List)} overwrites the file completely. Call {@link #read()}
  * to load the existing history before appending and saving.</p>
  *
  * @author Jan Grdanjski
@@ -52,7 +52,7 @@ public final class ChangeLogStore {
      * @return mutable list of all stored {@link ChangeLog} entries
      * @throws ResourceMissingException if the file exists but cannot be read
      */
-    public List<ChangeLog> readAll() throws ResourceMissingException {
+    public List<ChangeLog> read() throws ResourceMissingException {
         File file = new File(path);
         if (!file.exists()) {
             return new ArrayList<>();

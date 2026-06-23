@@ -16,14 +16,15 @@ import java.time.LocalDateTime;
  * @param changedField the name of the attribute that was modified
  * @param oldValue     the value before the change
  * @param newValue     the value after the change
- * @param changedBy    the role of the user who performed the change
+ * @param changedBy    the user who performed the change
+ * @param roleAtChange the role the user held at the time of the change
  * @param changedAt    the date and time when the change was recorded
  * @author Jan Grdanjski
  * @version 1.0
  * @since 1.0
  */
 public record ChangeLog(String changedField, String oldValue, String newValue,
-                        UserRole changedBy, LocalDateTime changedAt) implements Serializable {
+                        User changedBy, UserRole roleAtChange, LocalDateTime changedAt) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -45,6 +46,9 @@ public record ChangeLog(String changedField, String oldValue, String newValue,
         }
         if (changedBy == null) {
             throw new ValidationException("ChangeLog 'changedBy' must not be null");
+        }
+        if (roleAtChange == null) {
+            throw new ValidationException("ChangeLog 'roleAtChange' must not be null");
         }
         if (changedAt == null) {
             throw new ValidationException("ChangeLog 'changedAt' must not be null");

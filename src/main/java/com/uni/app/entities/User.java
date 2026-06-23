@@ -3,6 +3,9 @@ package com.uni.app.entities;
 import com.uni.app.enums.UserRole;
 import com.uni.app.exceptions.ValidationException;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Immutable record representing an application user loaded from the credentials file.
  *
@@ -16,7 +19,10 @@ import com.uni.app.exceptions.ValidationException;
  * @version 1.0
  * @since 1.0
  */
-public record User(String username, String passwordHash, UserRole role) {
+public record User(String username, String passwordHash, UserRole role) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Validates that no component is {@code null}.
